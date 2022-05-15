@@ -1,8 +1,8 @@
 global signo:function
 global suma:function
 global resta:function
-global mul:function
-global div:function
+global multi:function
+global divi:function
 global senox:function
 global cosenox:function
 global tangx:function
@@ -47,20 +47,19 @@ signo:
 	ret
 
 suma:
-    push rbp
-	mov rbp,rsp
-	sub rsp,48
+	push rbx
+	push r12
+	push r13
+	push r14
+	push r15
+	
+	addsd xmm0, xmm1
 
-       fld qword[rdi]
-       fld qword[rsi]
-       fadd
-       mov rbx, sumaR
-       fstp qword[rbx]
-       movsd xmm0,qword[rbx]
-
-	add rsp,48
-	mov rsp,rbp
-	pop rbp
+	pop r15
+	pop r14
+	pop r13
+	pop r12
+	pop rbx
 	ret
 
 resta:
@@ -68,35 +67,26 @@ resta:
 	mov rbp,rsp
 	sub rsp,48
 
-        fld qword[rdi]
-        fld qword[rsi]
-        fsub
-        mov rbx, restaR
-        fstp qword[rbx]
-        movsd xmm0,qword[rbx]
-
+    subsd xmm0, xmm1
+	
 	add rsp,48
 	mov rsp,rbp
 	pop rbp
 	ret
 
-mul:
+multi:
     push rbp
 	mov rbp,rsp
 	sub rsp,48
 
-        fld qword[rdi]
-        fld qword[rsi]
-        fmul
-        fstp qword[rel mulR]
-        movsd xmm0,qword[rel mulR]
+	mulsd xmm0, xmm1
 
 	add rsp,48
 	mov rsp,rbp
 	pop rbp
 	ret
 
-div:
+divi:
     push rbp
 	mov rbp,rsp
 	sub rsp,48
@@ -106,12 +96,8 @@ div:
 	push r14
 	push r15
 
-        fld qword[rdi]
-        fld qword[rsi]
-        fdiv
-        fstp qword[rel divR]
-        movsd xmm0,qword[rel divR]
-
+    divsd xmm0, xmm1
+	
     pop r15
 	pop r14
 	pop r13
@@ -126,22 +112,12 @@ senox:
     push rbp
 	mov rbp,rsp
 	sub rsp,48
-	push rbx
-	push r12
-	push r13
-	push r14
-	push r15
 
        fld qword[rdi]
        fsin
        fstp qword[rel seno]
        movsd xmm0,qword[rel seno]
 
-    pop r15
-	pop r14
-	pop r13
-	pop r12
-	pop rbx
 	add rsp,48
 	mov rsp,rbp
 	pop rbp

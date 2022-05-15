@@ -6,7 +6,6 @@ cdll.LoadLibrary("libcalculadora.so")
 calculadora = CDLL("libcalculadora.so")
 
 signo = calculadora.signo
-signo.argtypes = [c_double]
 signo.restype = c_double
 
 suma = calculadora.suma
@@ -17,56 +16,46 @@ resta = calculadora.resta
 resta.argtypes = [c_double, c_double]
 resta.restype = c_double
 
-mul = calculadora.mul
+mul = calculadora.multi
 mul.argtypes = [c_double, c_double]
 mul.restype = c_double
 
-div = calculadora.div
+div = calculadora.divi
 div.argtypes = [c_double, c_double]
 div.restype = c_double
 
 seno = calculadora.senox
-seno.argtypes = [c_double]
 seno.restype = c_double
 
 cos = calculadora.cosenox
-cos.argtypes = [c_double]
 cos.restype = c_double
 
 tan = calculadora.tangx
-tan.argtypes = [c_double]
 tan.restype = c_double
 
 arcoTan = calculadora.arcoTan
-arcoTan.argtypes = [c_double]
 arcoTan.restype = c_double
 
 arcoSeno = calculadora.arcoSeno
-arcoSeno.argtypes = [c_double]
 arcoSeno.restype = c_double
 
 convRaG = calculadora.convRaG
-convRaG.argtypes = [c_double]
 convRaG.restype = c_double
 
 convGaR = calculadora.convGaR
-convGaR.argtypes = [c_double]
 convGaR.restype = c_double
 
 logarcm = calculadora.logarcm
-logarcm.argtypes = [c_double]
 logarcm.restype = c_double
 
 dosalan = calculadora.dosalan
-dosalan.argtypes = [c_double]
 dosalan.restype = c_double
 
 raizdos = calculadora.raizdos
-raizdos.argtypes = [c_double]
 raizdos.restype = c_double
 
 win = Tk()  # This is to create a basic window
-win.geometry("491x385")  # this is for the size of the window
+win.geometry("591x385")  # this is for the size of the window
 win.resizable(False, False)  # this is to prevent from resizing the window
 win.title("Calculator")
 
@@ -77,31 +66,31 @@ def conversion_action(mode):
 
     if mode:
         # degrees to rad
-        x = convGaR(x)
+        x = convGaR(byref(c_double(x)))
         input_text.set(f'{x}')
     else:
         # rad to degrees
-        x = convRaG(x)
+        x = convRaG(byref(c_double(x)))
         input_text.set(f'{x}')
-    expression = x
+    expression = str(x)
 
 
 def sign_action():
     # change sign_action
     global expression
     x = float(expression)
-    x = signo(x)
-    input_text.set(f'{-x}')
-    expression = -x
+    x = signo(byref(c_double(x)))
+    input_text.set(f'{x}')
+    expression = str(x)
 
 
 def log_action():
     # logarithm
     global expression
     x = float(expression)
-    x = logarcm(x)
+    x = logarcm(byref(c_double(x)))
     input_text.set(f'{x}')
-    expression = x
+    expression = str(x)
 
 
 def square_action(mode):
@@ -110,12 +99,13 @@ def square_action(mode):
 
     if mode:
         # square_action
+        x = mul(x, x)
         input_text.set(f'{x}')
     else:
         # sqrt
-        x = raizdos(x)
+        x = raizdos(byref(c_double(x)))
         input_text.set(f'{x}')
-    expression = x
+    expression = str(x)
 
 
 def sin_action(mode):
@@ -124,13 +114,13 @@ def sin_action(mode):
 
     if mode:
         # sin_action
-        x = seno(x)
+        x = seno(byref(c_double(x)))
         input_text.set(f'{x}')
     else:
         # asin
-        x = arcoSeno(x)
+        x = arcoSeno(byref(c_double(x)))
         input_text.set(f'{x}')
-    expression = x
+    expression = str(x)
 
 
 def cos_action(mode):
@@ -139,7 +129,7 @@ def cos_action(mode):
 
     if mode:
         # cos_action
-        x = cos(x)
+        x = cos(byref(c_double(x)))
         input_text.set(f'{x}')
     else:
         # acos
@@ -153,11 +143,11 @@ def tan_action(mode):
 
     if mode:
         # tan_action
-        x = tan(x)
+        x = tan(byref(c_double(x)))
         input_text.set(f'{x}')
     else:
         # atan
-        x = arcoTan(x)
+        x = arcoTan(byref(c_double(x)))
         input_text.set(f'{x}')
     expression = str(x)
 
