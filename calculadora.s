@@ -24,28 +24,23 @@ arg1:   resq 2
 seno: resq 2
 coseno: resq 2
 tngte: resq 2
+sign: resq 2
+sumaR: resq 2
+restaR: resq 2
+mulR: resq 2
+divR: resq 2
 
 section .text
 signo:
     push rbp
 	mov rbp,rsp
 	sub rsp,48
-	push rbx
-	push r12
-	push r13
-	push r14
-	push r15
 
-        fld qword[rdi]
-        fchs
-        fstp qword[rel resp]
-        movsd xmm0,qword[rel resp]
+       fld qword[rdi]
+       fchs
+       fstp qword[rel sign]
+       movsd xmm0,qword[rel sign]
 
-    pop r15
-	pop r14
-	pop r13
-	pop r12
-	pop rbx
 	add rsp,48
 	mov rsp,rbp
 	pop rbp
@@ -55,23 +50,14 @@ suma:
     push rbp
 	mov rbp,rsp
 	sub rsp,48
-	push rbx
-	push r12
-	push r13
-	push r14
-	push r15
 
-        fld qword[rdi]
-        fld qword[rsi]
-        fadd
-        fstp qword[rel resp]
-        movsd xmm0,qword[rel resp]
+       fld qword[rdi]
+       fld qword[rsi]
+       fadd
+       mov rbx, sumaR
+       fstp qword[rbx]
+       movsd xmm0,qword[rbx]
 
-    pop r15
-	pop r14
-	pop r13
-	pop r12
-	pop rbx
 	add rsp,48
 	mov rsp,rbp
 	pop rbp
@@ -81,23 +67,14 @@ resta:
     push rbp
 	mov rbp,rsp
 	sub rsp,48
-	push rbx
-	push r12
-	push r13
-	push r14
-	push r15
 
         fld qword[rdi]
         fld qword[rsi]
         fsub
-        fstp qword[rel resp]
-        movsd xmm0,qword[rel resp]
+        mov rbx, restaR
+        fstp qword[rbx]
+        movsd xmm0,qword[rbx]
 
-    pop r15
-	pop r14
-	pop r13
-	pop r12
-	pop rbx
 	add rsp,48
 	mov rsp,rbp
 	pop rbp
@@ -107,23 +84,13 @@ mul:
     push rbp
 	mov rbp,rsp
 	sub rsp,48
-	push rbx
-	push r12
-	push r13
-	push r14
-	push r15
 
         fld qword[rdi]
         fld qword[rsi]
         fmul
-        fstp qword[rel resp]
-        movsd xmm0,qword[rel resp]
+        fstp qword[rel mulR]
+        movsd xmm0,qword[rel mulR]
 
-    pop r15
-	pop r14
-	pop r13
-	pop r12
-	pop rbx
 	add rsp,48
 	mov rsp,rbp
 	pop rbp
@@ -142,8 +109,8 @@ div:
         fld qword[rdi]
         fld qword[rsi]
         fdiv
-        fstp qword[rel resp]
-        movsd xmm0,qword[rel resp]
+        fstp qword[rel divR]
+        movsd xmm0,qword[rel divR]
 
     pop r15
 	pop r14
@@ -278,6 +245,7 @@ arcoSeno:
     fsubr
     fsqrt
     fpatan
+    mov rbx, resp
     fstp qword[rbx]
     movsd xmm0,qword[rbx]
 
@@ -301,7 +269,7 @@ convRaG:
 	push r14
     push r15
 
-    fld qword[rdi] ;angulo
+    fld qword[rdi]
     fld qword[rel ciento80]
     fmul
     fldpi

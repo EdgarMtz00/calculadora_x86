@@ -1,20 +1,87 @@
 from tkinter import *
+from ctypes import *
+
+cdll.LoadLibrary("libcalculadora.so")
+
+calculadora = CDLL("libcalculadora.so")
+
+signo = calculadora.signo
+signo.argtypes = [c_double]
+signo.restype = c_double
+
+suma = calculadora.suma
+suma.argtypes = [c_double, c_double]
+suma.restype = c_double
+
+resta = calculadora.resta
+resta.argtypes = [c_double, c_double]
+resta.restype = c_double
+
+mul = calculadora.mul
+mul.argtypes = [c_double, c_double]
+mul.restype = c_double
+
+div = calculadora.div
+div.argtypes = [c_double, c_double]
+div.restype = c_double
+
+seno = calculadora.senox
+seno.argtypes = [c_double]
+seno.restype = c_double
+
+cos = calculadora.cosenox
+cos.argtypes = [c_double]
+cos.restype = c_double
+
+tan = calculadora.tangx
+tan.argtypes = [c_double]
+tan.restype = c_double
+
+arcoTan = calculadora.arcoTan
+arcoTan.argtypes = [c_double]
+arcoTan.restype = c_double
+
+arcoSeno = calculadora.arcoSeno
+arcoSeno.argtypes = [c_double]
+arcoSeno.restype = c_double
+
+convRaG = calculadora.convRaG
+convRaG.argtypes = [c_double]
+convRaG.restype = c_double
+
+convGaR = calculadora.convGaR
+convGaR.argtypes = [c_double]
+convGaR.restype = c_double
+
+logarcm = calculadora.logarcm
+logarcm.argtypes = [c_double]
+logarcm.restype = c_double
+
+dosalan = calculadora.dosalan
+dosalan.argtypes = [c_double]
+dosalan.restype = c_double
+
+raizdos = calculadora.raizdos
+raizdos.argtypes = [c_double]
+raizdos.restype = c_double
 
 win = Tk()  # This is to create a basic window
-win.geometry("391x324")  # this is for the size of the window
+win.geometry("491x385")  # this is for the size of the window
 win.resizable(False, False)  # this is to prevent from resizing the window
 win.title("Calculator")
 
 
 def conversion_action(mode):
     global expression
-    x = int(expression)
+    x = float(expression)
 
     if mode:
         # degrees to rad
+        x = convGaR(x)
         input_text.set(f'{x}')
     else:
         # rad to degrees
+        x = convRaG(x)
         input_text.set(f'{x}')
     expression = x
 
@@ -22,8 +89,8 @@ def conversion_action(mode):
 def sign_action():
     # change sign_action
     global expression
-    x = int(expression)
-
+    x = float(expression)
+    x = signo(x)
     input_text.set(f'{-x}')
     expression = -x
 
@@ -31,70 +98,76 @@ def sign_action():
 def log_action():
     # logarithm
     global expression
-    x = int(expression)
-
+    x = float(expression)
+    x = logarcm(x)
     input_text.set(f'{x}')
     expression = x
 
 
 def square_action(mode):
     global expression
-    x = int(expression)
+    x = float(expression)
 
     if mode:
         # square_action
         input_text.set(f'{x}')
     else:
         # sqrt
+        x = raizdos(x)
         input_text.set(f'{x}')
     expression = x
 
 
 def sin_action(mode):
     global expression
-    x = int(expression)
+    x = float(expression)
 
     if mode:
         # sin_action
+        x = seno(x)
         input_text.set(f'{x}')
     else:
         # asin
+        x = arcoSeno(x)
         input_text.set(f'{x}')
     expression = x
 
 
 def cos_action(mode):
     global expression
-    x = int(expression)
+    x = float(expression)
 
     if mode:
         # cos_action
+        x = cos(x)
         input_text.set(f'{x}')
     else:
         # acos
         input_text.set(f'{x}')
-    expression = x
+    expression = str(x)
 
 
 def tan_action(mode):
     global expression
-    x = int(expression)
+    x = float(expression)
 
     if mode:
         # tan_action
+        x = tan(x)
         input_text.set(f'{x}')
     else:
         # atan
+        x = arcoTan(x)
         input_text.set(f'{x}')
-    expression = x
+    expression = str(x)
 
 
 def suma_action():
     global expression
     global operand
     global op
-    op = print
-    operand = int(expression)
+    op = suma
+    operand = float(expression)
     expression = ""
     input_text.set("")
 
@@ -103,8 +176,8 @@ def resta_action():
     global expression
     global operand
     global op
-    op = print
-    operand = int(expression)
+    op = resta
+    operand = float(expression)
     expression = ""
     input_text.set("")
 
@@ -113,8 +186,8 @@ def div_action():
     global expression
     global operand
     global op
-    op = print
-    operand = int(expression)
+    op = div
+    operand = float(expression)
     expression = ""
     input_text.set("")
 
@@ -123,47 +196,10 @@ def mul_action():
     global expression
     global operand
     global op
-    op = print
-    operand = int(expression)
+    op = mul
+    operand = float(expression)
     expression = ""
     input_text.set("")
-
-
-actions = {
-    "suma_action": suma_action,
-    "resta_action": resta_action,
-    "mul_action": mul_action,
-    "div_action": div_action,
-    "conversion_action": lambda: conversion_action(True),
-    "sign_action": sign_action,
-    "square_action": lambda: square_action(True),
-    "log_action": log_action,
-    "sin_action": lambda: sin_action(True),
-    "cos_action": lambda: cos_action(True),
-    "tan_action": lambda: tan_action(True),
-}
-
-sec_actions = {
-    "conversion_action": lambda: conversion_action(False),
-    "square_action": lambda: square_action(False),
-    "sin_action": lambda: sin_action(False),
-    "cos_action": lambda: cos_action(False),
-    "tan_action": lambda: tan_action(False),
-}
-
-
-# 'action_click' function :
-# Executes the default action of a pressed
-# button that matches with action dictionary members
-def action_click(item):
-    actions.get(item)()
-
-
-# 'action_dClick function:
-# Executes the secondary action of a pressed button
-# that matches with sec_action dictionary members
-def action_double_click(item):
-    sec_actions.get(item)()
 
 
 # 'btn_click' function :
@@ -192,9 +228,9 @@ def bt_equal():
     global expression
     global op
     global operand
-    op(int(expression))
-    input_text.set(str(operand))
-    expression = ""
+    res = op(operand, float(expression))
+    input_text.set(res)
+    expression = str(res)
 
 
 expression = ""
@@ -234,24 +270,23 @@ Button(btns_frame, text="C", fg="black", width=10, height=3, bd=0, bg="#eee", cu
        command=lambda: bt_clear()).grid(row=0, column=0, padx=1, pady=1)
 
 # Conversion between radians and degrees
-conv_btn = Button(btns_frame, text="rad<->deg", fg="black", width=10, height=3, bd=0, bg="#eee", cursor="hand2",
-                  command=lambda: action_click("conversion_action"))
-conv_btn.bind('<Button-1>', lambda _: action_click('conversion_action'))
-conv_btn.bind('<Button-3>', lambda _: action_double_click('conversion_action'))
+conv_btn = Button(btns_frame, text="rad<->deg", fg="black", width=10, height=3, bd=0, bg="#eee", cursor="hand2")
+conv_btn.bind('<Button-1>', lambda _: conversion_action(True))
+conv_btn.bind('<Button-3>', lambda _: conversion_action(False))
 conv_btn.grid(row=0, column=1, padx=1, pady=1)
 # Change sign_action
 Button(btns_frame, text="+/-", fg="black", width=10, height=3, bd=0, bg="#eee", cursor="hand2",
-       command=lambda: action_click("sign_action")).grid(row=0, column=2, padx=1, pady=1)
+       command=lambda: sign_action()).grid(row=0, column=2, padx=1, pady=1)
 
 # Division
 Button(btns_frame, text="/", fg="black", width=10, height=3, bd=0, bg="#eee", cursor="hand2",
-       command=lambda: action_click("div_action")).grid(row=0, column=3, padx=1, pady=1)
+       command=lambda: div_action()).grid(row=0, column=3, padx=1, pady=1)
 
 # Square number
 square_btn = Button(btns_frame, text="x\u00b2", fg="black", width=10, height=3, bd=0, bg="#eee", cursor="hand2")
 
-square_btn.bind('<Button-1>', lambda _: action_click('square_action'))
-square_btn.bind('<Button-3>', lambda _: action_double_click('square_action'))
+square_btn.bind('<Button-1>', lambda _: square_action(True))
+square_btn.bind('<Button-3>', lambda _: square_action(False))
 square_btn.grid(row=0, column=4, padx=1, pady=1)
 
 # second row
@@ -270,13 +305,11 @@ Button(btns_frame, text="9", fg="black", width=10, height=3, bd=0, bg="#fff", cu
 
 # Multiplication
 Button(btns_frame, text="*", fg="black", width=10, height=3, bd=0, bg="#eee", cursor="hand2",
-       command=lambda: action_click("mul_action")).grid(row=1, column=3, padx=1, pady=1)
+       command=lambda: mul_action()).grid(row=1, column=3, padx=1, pady=1)
 
 # Logarithm
-log = Button(btns_frame, text="log_action", fg="black", width=10, height=3, bd=0, bg="#eee", cursor="hand2")
-log.bind('<Button-1>', lambda _: action_click('log_action'))
-log.bind('<Button-3>', lambda _: action_double_click('log_action'))
-log.grid(row=1, column=4, padx=1, pady=1)
+Button(btns_frame, text="log", fg="black", width=10, height=3, bd=0, bg="#eee", cursor="hand2",
+       command=lambda: log_action()).grid(row=1, column=4, padx=1, pady=1)
 
 # third row
 # Four
@@ -293,12 +326,12 @@ Button(btns_frame, text="6", fg="black", width=10, height=3, bd=0, bg="#fff", cu
 
 # Minus
 Button(btns_frame, text="-", fg="black", width=10, height=3, bd=0, bg="#eee", cursor="hand2",
-       command=lambda: action_click("resta_action")).grid(row=2, column=3, padx=1, pady=1)
+       command=lambda: resta_action()).grid(row=2, column=3, padx=1, pady=1)
 
 # Sin
-sin_btn = Button(btns_frame, text="sin_action", fg="black", width=10, height=3, bd=0, bg="#eee", cursor="hand2")
-sin_btn.bind('<Button-1>', lambda _: action_click('sin_action'))
-sin_btn.bind('<Button-3>', lambda _: action_double_click('sin_action'))
+sin_btn = Button(btns_frame, text="sin", fg="black", width=10, height=3, bd=0, bg="#eee", cursor="hand2")
+sin_btn.bind('<Button-1>', lambda _: sin_action(True))
+sin_btn.bind('<Button-3>', lambda _: sin_action(False))
 sin_btn.grid(row=2, column=4, padx=1, pady=1)
 
 # fourth row
@@ -317,12 +350,12 @@ Button(btns_frame, text="3", fg="black", width=10, height=3, bd=0, bg="#fff", cu
 
 # Plus
 Button(btns_frame, text="+", fg="black", width=10, height=3, bd=0, bg="#eee", cursor="hand2",
-       command=lambda: action_click("suma_action")).grid(row=3, column=3, padx=1, pady=1)
+       command=lambda: suma_action()).grid(row=3, column=3, padx=1, pady=1)
 
 # Cosine
-cos_btn = Button(btns_frame, text="cos_action", fg="black", width=10, height=3, bd=0, bg="#eee", cursor="hand2")
-cos_btn.bind('<Button-1>', lambda _: action_click('cos_action'))
-cos_btn.bind('<Button-3>', lambda _: action_double_click('cos_action'))
+cos_btn = Button(btns_frame, text="cos", fg="black", width=10, height=3, bd=0, bg="#eee", cursor="hand2")
+cos_btn.bind('<Button-1>', lambda _: cos_action(True))
+cos_btn.bind('<Button-3>', lambda _: cos_action(False))
 cos_btn.grid(row=3, column=4, padx=1, pady=1)
 # fourth row
 
@@ -339,9 +372,9 @@ Button(btns_frame, text="=", fg="black", width=10, height=3, bd=0, bg="#eee", cu
        command=lambda: bt_equal()).grid(row=4, column=3, padx=1, pady=1)
 
 # Tangent
-tan_btn = Button(btns_frame, text="tan_action", fg="black", width=10, height=3, bd=0, bg="#eee", cursor="hand2")
+tan_btn = Button(btns_frame, text="tan", fg="black", width=10, height=3, bd=0, bg="#eee", cursor="hand2")
 
-tan_btn.bind('<Button-1>', lambda _: action_click('tan_action'))
-tan_btn.bind('<Button-3>', lambda _: action_double_click('tan_action'))
+tan_btn.bind('<Button-1>', lambda _: tan_action(True))
+tan_btn.bind('<Button-3>', lambda _: tan_action(False))
 tan_btn.grid(row=4, column=4, padx=1, pady=1)
 win.mainloop()
